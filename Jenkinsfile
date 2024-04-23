@@ -1,9 +1,9 @@
 pipeline {
     agent any
     stages {
-        stage('Build Account') {
+        stage('Build Auth') {
             steps {
-                build job: 'store.account', wait: true
+                build job: 'store.auth', wait: true
             }
         }
         stage('Build') { 
@@ -14,7 +14,7 @@ pipeline {
         stage('Build Image') {
             steps {
                 script {
-                    account = docker.build("enzoq2202/account:${env.BUILD_ID}", "-f Dockerfile .")
+                    auth = docker.build("enzoq2202/auth:${env.BUILD_ID}", "-f Dockerfile .")
                 }
             }
         }
@@ -22,8 +22,8 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
-                        account.push("${env.BUILD_ID}")
-                        account.push("latest")
+                        auth.push("${env.BUILD_ID}")
+                        auth.push("latest")
                     }
                 }
             }
